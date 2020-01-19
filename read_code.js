@@ -1,3 +1,4 @@
+//html을 통해 기본 코드를 해석하는 메소드
 function readCode(blockNumber, codeNumber) {
     //코드 타입 확인
     var type = $("#codeNumber" + blockNumber + "_" + codeNumber).find("input")[0].value;    //코드를 불러온다
@@ -18,7 +19,7 @@ function readCode(blockNumber, codeNumber) {
             var token = code.split(" ");
             if(token.length > 1) {
                 code = makeVariable(code);
-                if(code == null) return null;   //에러
+                if(code == null) return null;   //특수한 경우로, 아직 미완성처리이거나 오류
             }
             setVariable(code, temp_value);
             return temp_value;
@@ -37,7 +38,8 @@ function readCode(blockNumber, codeNumber) {
 						else{
 							document.write("필드");
 						}
-					}
+                    }
+                    return null;        //필드나 메소드의 리턴값을 반환해야하나, 아직 미구현
 				}
 				if(code.indexOf("[")>=0){
 					var brac_count = 0;
@@ -104,17 +106,19 @@ function readCode(blockNumber, codeNumber) {
                         if(arr_index2>0){
                             // 2차원 배열이라는 뜻
                             setDoubleArray(_name, arr_index, arr_index2, returnDoubleArray(_name, arr_index, arr_index2)+1);
+                            return returnDoubleArray(_name, arr_index, arr_index2);
                         }
                         setArray(_name, arr_index, returnArray(_name, arr_index)+1);
-
                     }
                     else if(charF == "-" || charL == "-"){
                         if(arr_index2>0){
                             // 2차원 배열이라는 뜻
                             setDoubleArray(_name, arr_index, arr_index2, returnDoubleArray(_name, arr_index, arr_index2)-1);
+                            return returnDoubleArray(_name, arr_index, arr_index2);
                         }
                         setArray(_name, arr_index, returnArray(_name, arr_index)-1);
                     }
+                    return returnArray(_name, arr_index);
 				}
 				else{
 					var charF = code.charAt(0);
@@ -125,13 +129,14 @@ function readCode(blockNumber, codeNumber) {
 					// 두 가지 연산자에 대해서 코드 줄에서 모두 제거
 					var _name = code.replace(";","");
 					// 변수 이름 _name
-					createVariable(); // 변수 생성
 					if(charF == "+" || charL == "+"){
-						// _name.setValue(_name.returnValue() +1); 값을 갖고와서 1을 증가시켜 새로 설정. _name은 변수의 이름
+						setValue(_name, returnValue(_name) +1); // 값을 갖고와서 1을 증가시켜 새로 설정. _name은 변수의 이름
 					}
 					else if(charF == "-" || charL == "-"){
-						// _name.setValue(_name.returnValue() -1); 값을 갖고와서 1을 감소시켜 새로 설정. _name은 변수의 이름
-					} 
+						setValue(_name, returnValue(_name) -1); // 값을 갖고와서 1을 감소시켜 새로 설정. _name은 변수의 이름
+                    }
+                    return returnValue(_name);
+                    
 				}
 			}
 
@@ -139,7 +144,14 @@ function readCode(blockNumber, codeNumber) {
     }
     return null;
 }
-function makeVariable(code){   //타입이 저장되어 있는 문자열의 경우 
+
+//문자열을 통해 코드 해석하는 메소드
+function readCode(code){
+
+}
+
+//타입이 저장되어 있는 문자열의 경우 
+function makeVariable(code){   
     var token = code.split(" ");
     var type = -1;  //타입에 대한 정보
     var typeString = "";    //타입의 문자열
@@ -183,4 +195,9 @@ function makeVariable(code){   //타입이 저장되어 있는 문자열의 경�
         return code.replace(";", "");
     }
     return null;
+}
+
+//문자 입력시 상수, 변수 판단 후 값 반환
+function getValue(string){  
+
 }
