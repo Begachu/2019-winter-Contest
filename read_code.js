@@ -7,10 +7,10 @@ function readCode(blockNumber, codeNumber) {
         var haveEqual = code.split("=");
         if (haveEqual.length != 1) {    //등호가 있는 경우
             var slice = code.indexOf("=");
-            var temp = code.subString(0, slice);
-            var temp_value = computeToInput(code.subString(slice)); //메소드를 이용하여 뒤의 값들 연산
+            var temp = code.substring(0, slice);
+            var temp_value = computeToInput(code.substring(slice)); //메소드를 이용하여 뒤의 값들 연산
             temp = temp.trim(); //좌우 공백제거
-            var lastChar = temp.subString(temp.length - 1);   //가장 오른쪽 문자를 임시로 가져옴
+            var lastChar = temp.substring(temp.length - 1);   //가장 오른쪽 문자를 임시로 가져옴
             if (lastChar == "+" || lastChar == "-" || lastChar == "*" || lastChar == "/" || lastChar == "%") {    //연산자 유무 확인
                 temp = temp.replace(lastChar, "");  //왼쪽 항에서 연산자를 삭제
                 temp = temp.temp.trim();
@@ -22,11 +22,11 @@ function readCode(blockNumber, codeNumber) {
                 if (code == null) return null;   //특수한 경우로, 아직 미완성처리이거나 오류
             }
             setVariable(code, temp_value);
-            return temp_value;
+            return code;
         } else {  //등호가 없는 경우
             var token = code.split(" ");
             if (token.length > 1) {    //처음 선언하는 경우(앞에 타입이 있음)
-                makeVariable(code);
+                return makeVariable(code);
             } else {
                 code = code.replaceAll(" ", ""); // 공백 제거
                 var dot = code.split(".");
@@ -45,7 +45,7 @@ function readCode(blockNumber, codeNumber) {
                     var brac_count = 0;
                     var brac_index = 0;
                     var arr_index2 = -1; // -1이 아닌 경우에는 2차원 배열이라는 뜻.
-                    var ex_name = code.subString(0, code.indexOf("["));
+                    var ex_name = code.substring(0, code.indexOf("["));
                     ex_name = ex_name.replaceAll("+", "");
                     ex_name = ex_name.replaceAll("-", "");
                     // 배열의 이름 임시 저장.
@@ -63,7 +63,7 @@ function readCode(blockNumber, codeNumber) {
                         }
                     }
 
-                    var arr_index = code.subString(code.indexOf("[") + 1, brac_index);
+                    var arr_index = code.substring(code.indexOf("[") + 1, brac_index);
                     // []안에 있는 값 arr_index 변수에 저장
                     code = code.replace(arr_index, "");
                     code = code.replace("[", "");
@@ -86,7 +86,7 @@ function readCode(blockNumber, codeNumber) {
                             }
                         }
 
-                        var arr_index2 = code.subString(code.indexOf("[") + 1, brac_index);
+                        var arr_index2 = code.substring(code.indexOf("[") + 1, brac_index);
                         // []안에 있는 값 arr_index2 변수에 저장
                         code = code.replace(arr_index, "");
                         code = code.replace("[", "");
@@ -106,7 +106,7 @@ function readCode(blockNumber, codeNumber) {
                         if (arr_index2 > 0) {
                             // 2차원 배열이라는 뜻
                             setDoubleArray(_name, arr_index, arr_index2, returnDoubleArray(_name, arr_index, arr_index2) + 1);
-                            return returnDoubleArray(_name, arr_index, arr_index2);
+                            return _name;
                         }
                         setArray(_name, arr_index, returnArray(_name, arr_index) + 1);
                     }
@@ -114,11 +114,11 @@ function readCode(blockNumber, codeNumber) {
                         if (arr_index2 > 0) {
                             // 2차원 배열이라는 뜻
                             setDoubleArray(_name, arr_index, arr_index2, returnDoubleArray(_name, arr_index, arr_index2) - 1);
-                            return returnDoubleArray(_name, arr_index, arr_index2);
+                            return _name;
                         }
                         setArray(_name, arr_index, returnArray(_name, arr_index) - 1);
                     }
-                    return returnArray(_name, arr_index);
+                    return _name;
                 }
                 else {
                     var charF = code.charAt(0);
@@ -135,7 +135,7 @@ function readCode(blockNumber, codeNumber) {
                     else if (charF == "-" || charL == "-") {
                         setValue(_name, returnValue(_name) - 1); // 값을 갖고와서 1을 감소시켜 새로 설정. _name은 변수의 이름
                     }
-                    return returnValue(_name);
+                    return _name;
 
                 }
             }
@@ -150,16 +150,16 @@ function readCode(code) {
     var haveEqual = code.split("=");
     if (haveEqual.length != 1) {    //등호가 있는 경우
         var slice = code.indexOf("=");
-        var temp = code.subString(0, slice);
-
+        var temp = code.substring(0, slice);
+        
         if (code.indexOf(slice + 1) == "=") { //비교 연산자 중 ==인 경우
 
         } else if (code.indexOf(slice - 1) == ">" || code.indexOf(slice - 1) == "<") { //비교연산자인 경우
 
         } else {
-            var temp_value = computeToInput(code.subString(slice)); //메소드를 이용하여 뒤의 값들 연산
+            var temp_value = computeToInput(code.substring(slice)); //메소드를 이용하여 뒤의 값들 연산
             temp = temp.trim(); //좌우 공백제거
-            var lastChar = temp.subString(temp.length - 1);   //가장 오른쪽 문자를 임시로 가져옴
+            var lastChar = temp.substring(temp.length - 1);   //가장 오른쪽 문자를 임시로 가져옴
             if (lastChar == "+" || lastChar == "-" || lastChar == "*" || lastChar == "/" || lastChar == "%") {    //연산자 유무 확인
                 temp = temp.replace(lastChar, "");  //왼쪽 항에서 연산자를 삭제
                 temp = temp.temp.trim();
@@ -177,11 +177,29 @@ function readCode(code) {
         if (code.includes(">") || code.includes("<")) { }
         else {
             //page2 시작
+            var jsTempStringArray = [];
+            var tempStringNumber = 0;
+
             while(true){            //따옴표가 있는가?
-                if(code.includes('"')){
-
-                }else if(code.includes("'")){
-
+                if(code.includes('"')){ //문자열
+                    var start = code.indexOf('"');
+                    var temp_code = code.substring(start+1);
+                    var end = temp_code.indexOf('"');
+                    jsTempStringArray.push(code.substring(start+1, start+1+end));
+                    //임시 저장 후 해당 위치에 값 대체
+                    var front = code.substring(0, start);
+                    var tail = temp_code.substring(end+1);
+                    code = front +"jsTempStringArray_"+tempStringNumber + tail;
+                    tempStringNumber++;
+                }else if(code.includes("'")){   //문자(char)
+                    var start = code.indexOf("'");
+                    var temp_code = code.substring(start+1);
+                    var end = temp_code.indexOf("'");
+                    var tempChar = code.substring(start+1, start+1+end);
+                    //숫자로 변환하여 값 대체
+                    var front = code.substring(0, start);
+                    var tail = temp_code.substring(end+1);
+                    code = front +parseInt(tempChar)+ tail;
                 }else{
                     break;
                 }
@@ -189,21 +207,131 @@ function readCode(code) {
             code.replaceAll(" ", "");
             while(true){            //괄호가 존재하는가?
                 if(code.includes("(")){         //괄호가 존재하는가?
-
+                    var start = code.indexOf("(");
+                    var temp_code = code.substring(start+1);
+                    var end = temp_code.indexOf(")");
+                    var innerText = code.substring(start+1, start+1+end);
+                    //괄호의 내용물이 타입인 경우 알아서 변환되므로 그냥 삭제
+                    if(innerText === "int" || innerText === "long" || innerText === "float" || innerText === "double"
+                    || innerText === "bool" || innerText == "boolean" || innerText == "char"){
+                        var front = code.substring(0, start);
+                        var tail = temp_code.substring(end+1);
+                        code = front + tail;
+                    }else{
+                        var result = readCode(innerText);   //괄호 안을 하나의 코드로 간주하여 연산을 우선 수행
+                        var front = code.substring(0, start);
+                        var tail = temp_code.substring(end+1);
+                        code = front + result + tail;
+                    }
                 }else{
                     break;
                 }
             }
             //page3 시작
+            while(true){
+                if(code.includes("+") || code.includes("-") || code.includes("*") || code.includes("/") || code.includes("%")){
+                    // 연산자가 존재하는가?
+                    var left_operator;
+                    var right_operator;
+                    var operator_index = -1;
+                    for(var i=0; i<code.length; i++){
+                        // 가장 왼쪽 연산자 찾기
+                        left_operator = code.charAt(i);
+                        if(left_operator=='+' || left_operator == '-' || left_operator == '/' || left_operator == '*' || left_operator == '%'){
+                            operator_index = i;
+                            break;
+                        }
+                    }
+                    var left_operand = code.subString(count, operator_index);
+                    var right_operand = code.subString(operator_index+1, code.length);
+                    // 왼쪽 연산자를 기준으로 왼쪽과 오른쪽을 나눈다.
+    
+                    for(var i=0; i<right_operand.length; i++){
+                        // 오른쪽에도 연산자가 있는지를 확인
+                        var find_op = right_operand.charAt(i);
+                        if(find_op=='+' || find_op == '-' || find_op == '/' || find_op == '*' || lfind_op == '%'){
+                            right_operator = find_op;
+                            break;
+                        }
+                    }
+                    
+                    var result; // 계산 결과를 저장할 변수
 
+                    if(right_operator != undefined){
+                        if((left_operator=='+' || left_operator=='-') && (right_operator=='*' || right_operator=='/' || right_operator=='%')){
+                            // 뒷부분이 먼저 연산 되어야 할 때
+                            right_operand = readCode(right_operand); // 오른쪽 피연산자를 인자로 주어 결과 받기
+                            left_operand = readCode(left_operand); // 왼쪽 피연산자 값 갖고 오기
+                            if(left_operator=='+'){
+                                result = left_operand + right_operand;
+                            }
+                            else if(left_operator=='-'){
+                                result = left_operand - right_operand;
+                            }
+                            return result;
+                            
+                        }
+                        else{
+                            // 앞부터 연산을 해도 될 때
+                            left_operand = readCode(left_operand); // 앞 부분 피연산자
+                            var real_operand = right_operand.subString(0, right_operand.indexOf(right_operator)); // 실제 두 번째 피연산자
+                            real_operand = readCode(real_operand); // 실제 데이터를 갖고 옴
+                            if(left_operator=='+'){
+                                left_operand = left_operand + real_operand;
+                            }
+                            else if(left_operator=='-'){
+                                left_operand = left_operand - real_operand;
+                            }
+                            else if(left_operator=='*'){
+                                left_operand = left_operand * real_operand;
+                            }
+                            else if(left_operator=='/'){
+                                left_operand = left_operand / real_operand;
+                            }
+                            else if(left_operator=='%'){
+                                left_operand = left_operand % real_operand;
+                            }
 
-
+                            right_operand = right_operand.replace(real_operand, left_operand);
+                            code = right_operand;
+                            continue;
+                        }
+                    }
+                    else{
+                        // 오른쪽 피연산자에서 연산자를 찾지 못했을 때, 그냥 그거 연산해서 내보내면 됨.
+                        left_operand = readCode(left_operand);
+                        right_operand = readCode(right_operand);
+                        if(left_operator=='+'){
+                            result = left_operand + right_operand;
+                            // 이와 같은 형태로 수정할 것.
+                        }
+                        else if(left_operator=='-'){
+                            result = left_operand - right_operand;
+                        }
+                        else if(left_operator=='*'){
+                            result = left_operand * right_operand;
+                        }
+                        else if(left_operator=='/'){
+                            result = left_operand / right_operand;
+                        }
+                        else if(left_operator=='%'){
+                            result = left_operand % right_operand;
+                        }
+                        return result;
+                    }   
+                }
+                else{
+                    // 연산자가 존재하지 않으면 그냥 반환해버리기 page4와 관련
+                    //return readCode(code);
+                    break;
+                }
+            }
 
             if (code.indexOf("[") >= 0) {
                 var brac_count = 0;
                 var brac_index = 0;
                 var arr_index2 = -1; // -1이 아닌 경우에는 2차원 배열이라는 뜻.
-                var ex_name = code.subString(0, code.indexOf("["));
+                var ex_name = code.substring(0, code.indexOf("["));
                 ex_name = ex_name.replaceAll("+", "");
                 ex_name = ex_name.replaceAll("-", "");
                 // 배열의 이름 임시 저장.
@@ -221,7 +349,7 @@ function readCode(code) {
                     }
                 }
 
-                var arr_index = code.subString(code.indexOf("[") + 1, brac_index);
+                var arr_index = code.substring(code.indexOf("[") + 1, brac_index);
                 // []안에 있는 값 arr_index 변수에 저장
                 code = code.replace(arr_index, "");
                 code = code.replace("[", "");
@@ -244,22 +372,26 @@ function readCode(code) {
                         }
                     }
 
-                    var arr_index2 = code.subString(code.indexOf("[") + 1, brac_index);
+                    arr_index2 = code.substring(code.indexOf("[") + 1, brac_index);
                     // []안에 있는 값 arr_index2 변수에 저장
-                    code = code.replace(arr_index, "");
+                    code = code.replace(arr_index2, "");
                     code = code.replace("[", "");
                     code = code.replace("]", "");
                     // [N] 형태 또 제거하여 code에 저장
                     arr_index2 = readCode(arr_index2); // 함수로 다시보내 처리하도록 함.
                 }
-
+                /*
                 var charF = code.charAt(0);
                 var charL = code.charAt(code.length - 2);
                 code = code.replaceAll("+", "");
-                code = code.replaceAll("-", "");
-
+                code = code.replaceAll("-", "");w3
+*/
                 var _name = code.replace(";", "");
-
+                if(arr_index2 > 0){
+                    return returnDoubleArray(_name, arr_index, arr_index2);
+                }
+                return returnArray(_name, arr_index);
+/*
                 if (charF == "+" || charL == "+") {
                     if (arr_index2 > 0) {
                         // 2차원 배열이라는 뜻
@@ -275,10 +407,15 @@ function readCode(code) {
                         return returnDoubleArray(_name, arr_index, arr_index2);
                     }
                     setArray(_name, arr_index, returnArray(_name, arr_index) - 1);
+                }else{
+
                 }
-                return returnArray(_name, arr_index);
+                return returnArray(_name, arr_index);*/
+
             }
             else {
+
+                /*
                 var charF = code.charAt(0);
                 var charL = code.charAt(code.length - 2);
                 // 문자열 앞 뒤 문자 임시 저장
@@ -293,13 +430,11 @@ function readCode(code) {
                 else if (charF == "-" || charL == "-") {
                     setValue(_name, returnValue(_name) - 1); // 값을 갖고와서 1을 감소시켜 새로 설정. _name은 변수의 이름
                 }
-                return returnValue(_name);
+                return returnValue(_name);*/
 
             }
         }
     }
-
-}
 return null;
 }
 
@@ -339,8 +474,8 @@ function makeVariable(code) {
         while (code.indexOf("[") != -1) {                   //1-19 오타 수정
             type += 10;
             var temp = code.indexOf("[");                   //1-19 오타 수정
-            var front = code.subString(0, temp);
-            var last = code.subString(temp + 2);
+            var front = code.substring(0, temp);
+            var last = code.substring(temp + 2);
             code = front + last;
         }
         if (type < 10) createVariable(code.replace(";", ""), type);	//id, type 순으로 기입
@@ -351,6 +486,26 @@ function makeVariable(code) {
 }
 
 //문자 입력시 상수, 변수 판단 후 값 반환
+var number = /^[0-9]+$/;
 function getValue(string) {
+    if(!number.test(string.charAt(0))){  //변수인가?
+        if(string.includes(".")){   //필드 혹은 메소드인가?
 
+        }else{
+            var type = returnType(string);
+            if(type<10){        //배열 X
+                return returnValue(string);
+            }else if(type<20){  //1차원 배열
+
+            }else if(type<30){  //2차원 배열
+
+            }else if(type<200){ //stack
+
+            }
+        }
+    }else{      //숫자일 때
+        if(string.includes(".")) return parseFloat(string);
+        else parseInt(string);
+    }
+    return null;
 }
