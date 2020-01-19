@@ -177,39 +177,60 @@ function readCode(code) {
         if (code.includes(">") || code.includes("<")) { }
         else {
             //page2 시작
+            while(true){            //따옴표가 있는가?
+                if(code.includes('"')){
 
+                }else if(code.includes("'")){
 
-            var token = code.split(" ");
-            if (token.length > 1) {    //처음 선언하는 경우(앞에 타입이 있음)
-                makeVariable(code);
-            } else {
-
-                //곧 삭제하고 다른 메소드에 넣을 부분
-                code = code.replaceAll(" ", ""); // 공백 제거
-                var dot = code.split(".");
-                if (dot.length > 1) {
-                    for (var i = 1; i < dot.length; i++) {
-                        if (dot[i].indexOf("(") >= 0) {
-                            document.write("메소드 처리");
-                        }
-                        else {
-                            document.write("필드");
-                        }
-                    }
-                    return null;        //필드나 메소드의 리턴값을 반환해야하나, 아직 미구현
+                }else{
+                    break;
                 }
-                //여기까지
+            }
+            code.replaceAll(" ", "");
+            while(true){            //괄호가 존재하는가?
+                if(code.includes("(")){         //괄호가 존재하는가?
+
+                }else{
+                    break;
+                }
+            }
+            //page3 시작
 
 
-                if (code.indexOf("[") >= 0) {
-                    var brac_count = 0;
-                    var brac_index = 0;
-                    var arr_index2 = -1; // -1이 아닌 경우에는 2차원 배열이라는 뜻.
-                    var ex_name = code.subString(0, code.indexOf("["));
-                    ex_name = ex_name.replaceAll("+", "");
-                    ex_name = ex_name.replaceAll("-", "");
-                    // 배열의 이름 임시 저장.
 
+
+            if (code.indexOf("[") >= 0) {
+                var brac_count = 0;
+                var brac_index = 0;
+                var arr_index2 = -1; // -1이 아닌 경우에는 2차원 배열이라는 뜻.
+                var ex_name = code.subString(0, code.indexOf("["));
+                ex_name = ex_name.replaceAll("+", "");
+                ex_name = ex_name.replaceAll("-", "");
+                // 배열의 이름 임시 저장.
+
+                for (var i = 0; i < code.length; i++) {
+                    if (code.charAt(i) == "[") {
+                        brac_count++;
+                    }
+                    else if (code.charAt(i) == "]") {
+                        brac_count--;
+                    }
+                    if (count == 0) {
+                        brac_index = i;
+                        // ]의 인덱스 찾기
+                    }
+                }
+
+                var arr_index = code.subString(code.indexOf("[") + 1, brac_index);
+                // []안에 있는 값 arr_index 변수에 저장
+                code = code.replace(arr_index, "");
+                code = code.replace("[", "");
+                code = code.replace("]", "");
+                // [N] 형태 제거하여 code에 저장
+                arr_index = readCode(arr_index); // 함수로 다시보내 처리하도록 함.
+                if ((returnType(ex_name) / 10) > 1) {
+                    // 2차원 배열이라는 뜻.
+                    // [] 안의 값을 한 번 더 얻어와 연산을 수행.
                     for (var i = 0; i < code.length; i++) {
                         if (code.charAt(i) == "[") {
                             brac_count++;
@@ -223,86 +244,63 @@ function readCode(code) {
                         }
                     }
 
-                    var arr_index = code.subString(code.indexOf("[") + 1, brac_index);
-                    // []안에 있는 값 arr_index 변수에 저장
+                    var arr_index2 = code.subString(code.indexOf("[") + 1, brac_index);
+                    // []안에 있는 값 arr_index2 변수에 저장
                     code = code.replace(arr_index, "");
                     code = code.replace("[", "");
                     code = code.replace("]", "");
-                    // [N] 형태 제거하여 code에 저장
-                    arr_index = readCode(arr_index); // 함수로 다시보내 처리하도록 함.
-                    if ((returnType(ex_name) / 10) > 1) {
-                        // 2차원 배열이라는 뜻.
-                        // [] 안의 값을 한 번 더 얻어와 연산을 수행.
-                        for (var i = 0; i < code.length; i++) {
-                            if (code.charAt(i) == "[") {
-                                brac_count++;
-                            }
-                            else if (code.charAt(i) == "]") {
-                                brac_count--;
-                            }
-                            if (count == 0) {
-                                brac_index = i;
-                                // ]의 인덱스 찾기
-                            }
-                        }
-
-                        var arr_index2 = code.subString(code.indexOf("[") + 1, brac_index);
-                        // []안에 있는 값 arr_index2 변수에 저장
-                        code = code.replace(arr_index, "");
-                        code = code.replace("[", "");
-                        code = code.replace("]", "");
-                        // [N] 형태 또 제거하여 code에 저장
-                        arr_index2 = readCode(arr_index2); // 함수로 다시보내 처리하도록 함.
-                    }
-
-                    var charF = code.charAt(0);
-                    var charL = code.charAt(code.length - 2);
-                    code = code.replaceAll("+", "");
-                    code = code.replaceAll("-", "");
-
-                    var _name = code.replace(";", "");
-
-                    if (charF == "+" || charL == "+") {
-                        if (arr_index2 > 0) {
-                            // 2차원 배열이라는 뜻
-                            setDoubleArray(_name, arr_index, arr_index2, returnDoubleArray(_name, arr_index, arr_index2) + 1);
-                            return returnDoubleArray(_name, arr_index, arr_index2);
-                        }
-                        setArray(_name, arr_index, returnArray(_name, arr_index) + 1);
-                    }
-                    else if (charF == "-" || charL == "-") {
-                        if (arr_index2 > 0) {
-                            // 2차원 배열이라는 뜻
-                            setDoubleArray(_name, arr_index, arr_index2, returnDoubleArray(_name, arr_index, arr_index2) - 1);
-                            return returnDoubleArray(_name, arr_index, arr_index2);
-                        }
-                        setArray(_name, arr_index, returnArray(_name, arr_index) - 1);
-                    }
-                    return returnArray(_name, arr_index);
+                    // [N] 형태 또 제거하여 code에 저장
+                    arr_index2 = readCode(arr_index2); // 함수로 다시보내 처리하도록 함.
                 }
-                else {
-                    var charF = code.charAt(0);
-                    var charL = code.charAt(code.length - 2);
-                    // 문자열 앞 뒤 문자 임시 저장
-                    code = code.replaceAll("+", "");
-                    code = code.replaceAll("-", "");
-                    // 두 가지 연산자에 대해서 코드 줄에서 모두 제거
-                    var _name = code.replace(";", "");
-                    // 변수 이름 _name
-                    if (charF == "+" || charL == "+") {
-                        setValue(_name, returnValue(_name) + 1); // 값을 갖고와서 1을 증가시켜 새로 설정. _name은 변수의 이름
-                    }
-                    else if (charF == "-" || charL == "-") {
-                        setValue(_name, returnValue(_name) - 1); // 값을 갖고와서 1을 감소시켜 새로 설정. _name은 변수의 이름
-                    }
-                    return returnValue(_name);
 
+                var charF = code.charAt(0);
+                var charL = code.charAt(code.length - 2);
+                code = code.replaceAll("+", "");
+                code = code.replaceAll("-", "");
+
+                var _name = code.replace(";", "");
+
+                if (charF == "+" || charL == "+") {
+                    if (arr_index2 > 0) {
+                        // 2차원 배열이라는 뜻
+                        setDoubleArray(_name, arr_index, arr_index2, returnDoubleArray(_name, arr_index, arr_index2) + 1);
+                        return returnDoubleArray(_name, arr_index, arr_index2);
+                    }
+                    setArray(_name, arr_index, returnArray(_name, arr_index) + 1);
                 }
+                else if (charF == "-" || charL == "-") {
+                    if (arr_index2 > 0) {
+                        // 2차원 배열이라는 뜻
+                        setDoubleArray(_name, arr_index, arr_index2, returnDoubleArray(_name, arr_index, arr_index2) - 1);
+                        return returnDoubleArray(_name, arr_index, arr_index2);
+                    }
+                    setArray(_name, arr_index, returnArray(_name, arr_index) - 1);
+                }
+                return returnArray(_name, arr_index);
+            }
+            else {
+                var charF = code.charAt(0);
+                var charL = code.charAt(code.length - 2);
+                // 문자열 앞 뒤 문자 임시 저장
+                code = code.replaceAll("+", "");
+                code = code.replaceAll("-", "");
+                // 두 가지 연산자에 대해서 코드 줄에서 모두 제거
+                var _name = code.replace(";", "");
+                // 변수 이름 _name
+                if (charF == "+" || charL == "+") {
+                    setValue(_name, returnValue(_name) + 1); // 값을 갖고와서 1을 증가시켜 새로 설정. _name은 변수의 이름
+                }
+                else if (charF == "-" || charL == "-") {
+                    setValue(_name, returnValue(_name) - 1); // 값을 갖고와서 1을 감소시켜 새로 설정. _name은 변수의 이름
+                }
+                return returnValue(_name);
+
             }
         }
-
     }
-    return null;
+
+}
+return null;
 }
 
 //타입이 저장되어 있는 문자열의 경우 
