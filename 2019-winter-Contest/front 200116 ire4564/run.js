@@ -113,11 +113,11 @@ createVariable("Two", 2); //하나만 생성하기
 **********************************************************************************/
 
  //이차원 배열 추가
- createDoubleArray("Doubles", 20, 4, 5);
+// createDoubleArray("Doubles", 20, 4, 5);
  //createDoubleArray("Test", 20, 2, 3);
 
  //이차원 배열 값 변경
-
+/*
  for(var k=0; k<4; k++){
      for(var j=0; j<5; j++){
         setDoubleArrray("Doubles", k, j, "0");
@@ -130,3 +130,4 @@ createVariable("Two", 2); //하나만 생성하기
 returnDoubleValue("Doubles", 3, 1);
 
 returnType("Doubles");
+*/

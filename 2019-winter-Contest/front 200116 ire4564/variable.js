@@ -121,13 +121,14 @@ function createVariable (id, type, value) {
         }
 
         //변수 상자 아이디 설정해주기
-        eval("$(variable" + index + ").attr('id','V +"+ id +"')");  //변수명으로 아이디 설정해주기
+        //eval("$(variable" + index + ").attr('id','V +"+ id +"')");  //변수명으로 아이디 설정해주기
+        eval("$(variable" + index + ").attr('id','"+ id +"')");  //변수명으로 아이디 설정해주기
         eval("paper.appendChild(variable" + index + ");"); //화면에 추가해주기
 
         index++;
 
 
-        console.log("type 은? : " + $("#" + id + "T").text());
+        //console.log("type 은? : " + $("#" + id + "T").text());
         console.log("id는? : "  + id);
 
         return id;

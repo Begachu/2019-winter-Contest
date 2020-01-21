@@ -61,7 +61,7 @@ function codeCSS(blockNumber, codeNumber){
 }
 
 function draw(blockNumber, codeNumber) {
-    if (codeNumber == currentCodeNumber) return 0;
+    if (codeNumber+1 == currentCodeNumber) return 0;
     if (codeNumber < currentCodeNumber) resetDraw();
     var tempCode = $("#codeNumber" + currentBlockNumber + "_" + currentCodeNumber);
     if (tempCode[0] == undefined) {     //존재하지 않는 경우
@@ -69,7 +69,9 @@ function draw(blockNumber, codeNumber) {
     }
     var codeType = tempCode.find("input")[0].value;
     if (codeType == 0) {
+        console.log("일반문장 만남!");
         if (tempCode.find("span")[0].innerText === "}") {
+            console.log("블록 종료!");
             currentBlockNumber = blockVariable[blockAmount][0];
             if ($("#codeNumber" + currentBlcokNumber + "_" + loopStack[loopStack.length - 1])[0] !== undefined) {
                 currentCodeNumber = loopStack.pop();
@@ -77,11 +79,12 @@ function draw(blockNumber, codeNumber) {
             resetVariable(currentBlockNumber);
             return 1;
         }
-        var id = readCode(currentBlockNumber, currentCodeNumber++);
+        var id = readMainCode(currentBlockNumber, currentCodeNumber++);
         addVariable(id);
         return 1;
     }
     else if (codeType == 1) {    //반복 조건문 등
+        console.log("반복문 만남!");
         var code = tempCode.find("span")[0].innerText;
         var result = ifLoop(currentBlockNumber, currentCodeNumber);
         if (result) {
@@ -94,14 +97,14 @@ function draw(blockNumber, codeNumber) {
                     currentBlockNumber = currentCodeNumber++;
                 } else {
                     //괄호로 묶지 않은 상태로 n중 반복문은 판단 불가능.
-                    readCode(currentBlockNumber, currentCodeNumber + 1);
+                    readMainCode(currentBlockNumber, currentCodeNumber + 1);
                 }
             } else {
                 if (code.subString(code.length - 1) == "{") {
                     blockVariable[blockAmount++][0] = currentBlockNumber;
                     currentBlockNumber = currentCodeNumber++;
                 } else {
-                    readCode(currentBlockNumber, currentCodeNumber + 1);
+                    readMainCode(currentBlockNumber, currentCodeNumber + 1);
                 }
             }
 
