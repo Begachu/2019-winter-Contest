@@ -133,6 +133,11 @@ function resetVariable(index) {
         if (blockVariable[i][0] < index) continue;
         for (var j = 1; j < blockVariable[i].length; j++) {
             //id에 해당하는 변수 삭제 메소드 호출
+            var type = returnType(blockVariable[i][j]);
+            if(type<10) deleteVariable(blockVariable[i][j]);
+            else if(type<20) deleteArray(blockVariable[i][j]);
+            else if(type<30) ;
+            else if(type<110) deleteStack(blockVariable[i][j]); 
         }
         blockVariable.pop();
         tempAmount--;

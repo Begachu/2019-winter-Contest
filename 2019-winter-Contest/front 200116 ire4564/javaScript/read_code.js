@@ -248,24 +248,29 @@ function readCode(code) {
         var first = readCode(code.substring(0, bigger));
         if (code.includes("=")) {
             var second = readCode(code.substring(bigger + 2));
-            return first >= second;
+            //return first >= second;
+            return getValue(first) >= getValue(second);
         }
         var second = readCode(code.substring(bigger + 1));
-        return first > second;
+        //return first > second;
+        return getValue(first) > getValue(second);
     } else if (code.includes("<")) {
         var smaller = code.indexOf("<");
         var first = readCode(code.substring(0, smaller));
         if (code.includes("=")) {
             var second = readCode(code.substring(smaller + 2));
-            return first <= second;
+           // return first <= second;
+            return getValue(first) <= getValue(second);  
         }
         var second = readCode(code.substring(smaller + 1));
-        return first < second;
+        //return first < second;
+        console.log(getValue(first)+", "+getValue(second));
+        return getValue(first) < getValue(second);
     } else if (code.includes("==")) {
         var equal = code.indexOf("==");
         var first = code.substring(0, equal);
         var second = code.substring(equal + 2);
-        return first == second;
+        return getValue(first) == getValue(second);
     }
     if (code === "true") return true;
     if (code === "false") return false;
@@ -707,7 +712,9 @@ function ifLoop(blockNumber, codeNumber) {
             var brac_open = code.indexOf("(");
             var brac_close = code.indexOf(")");
             var condition = code.substring(brac_open + 1, brac_close);
+            console.log(condition);
             condition = readCode(condition); // 조건문 얻어오기
+            console.log("condition"+condition);
             if (condition == true) {
                 do_if = if_count;
                 return true;

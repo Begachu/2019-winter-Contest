@@ -52,11 +52,13 @@
 
 
             for($i=0; $i<$size; $i++){
-
+                $whoIsFirst=0;
                 $line = $codeList[$i];
-                
+                if(strpos($line, "{")!==false && strpos($line, "}")!==false){
+                    $whoIsFirst = strpos($line, "{")<strpos($line, "{")? 1:-1;
+                }
                 //case 1: 여는 중괄호 만남
-                if(strpos($line, "{")!==false){
+                if($whoIsFirst==1 || ($whoIsFirst==0&&strpos($line, "{")!==false)){
                     $temp = explode("{", $line);
                     
                     $condition = 1;
@@ -95,7 +97,7 @@
                 }
 
                 //case 3: 닫는 중괄호 만남
-                else if(strpos($line, "}")!==false){
+                else if($whoIsFirst==-1 || ($whoIsFirst==0 && strpos($line, "}")!==false)){
                     $temp = explode("}", $line);
                     //중괄호까지의 조건을 담은 코드를 일단 js로 전송
                     echo '<script>addCode('.$block.','.$codeNumber.',0, "'.htmlspecialchars($temp[0]).'}");</script>
