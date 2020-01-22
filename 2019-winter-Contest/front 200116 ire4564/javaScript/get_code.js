@@ -5,7 +5,7 @@ var currentBlockNumber = 0;
 var currentCodeNumber = 1;
 var blockAmount = 0;
 var loopStack = [];
-var blockVariable = [[], []];
+var blockVariable = [];
 
 function addCode(blockNumber, codeNumber, type, data) {
     if (blockNumber > lastBlockNumber) {
@@ -61,10 +61,11 @@ function codeCSS(blockNumber, codeNumber){
 }
 
 function draw(blockNumber, codeNumber) {
+    console.log(currentBlockNumber+", "+currentCodeNumber);
     if (codeNumber+1 == currentCodeNumber) return 0;
     if (codeNumber < currentCodeNumber) resetDraw();
     var tempCode = $("#codeNumber" + currentBlockNumber + "_" + currentCodeNumber);
-    if (tempCode[0] == undefined) {     //존재하지 않는 경우
+    if (tempCode === undefined) {     //존재하지 않는 경우
         currentCodeNumber++;
     }
     var codeType = tempCode.find("input")[0].value;
@@ -72,8 +73,8 @@ function draw(blockNumber, codeNumber) {
         console.log("일반문장 만남!");
         if (tempCode.find("span")[0].innerText === "}") {
             console.log("블록 종료!");
-            currentBlockNumber = blockVariable[blockAmount][0];
-            if ($("#codeNumber" + currentBlcokNumber + "_" + loopStack[loopStack.length - 1])[0] !== undefined) {
+            currentBlockNumber = blockVariable[blockAmount-1];
+            if ($("#codeNumber" + currentBlockNumber + "_" + loopStack[loopStack.length - 1])[0] !== undefined) {
                 currentCodeNumber = loopStack.pop();
             }
             resetVariable(currentBlockNumber);
@@ -90,18 +91,18 @@ function draw(blockNumber, codeNumber) {
         if (result) {
             var token = code.split("(");
             token[0] = token[0].trim();
-            if (token[0] === "for" || token[0] === "while") {
-                if (code.subString(code.length - 1) == "{") {
+            if (token[0] === "for" || token[0] === "while") {   //반복문
+                if (code.charAt(code.length - 1) === "{") {
                     loopStack.push(currentCodeNumber);
-                    blockVariable[blockAmount++][0] = currentBlockNumber;
+                    blockVariable[blockAmount++] = [currentBlockNumber];
                     currentBlockNumber = currentCodeNumber++;
                 } else {
                     //괄호로 묶지 않은 상태로 n중 반복문은 판단 불가능.
                     readMainCode(currentBlockNumber, currentCodeNumber + 1);
                 }
-            } else {
-                if (code.subString(code.length - 1) == "{") {
-                    blockVariable[blockAmount++][0] = currentBlockNumber;
+            } else {                                            //조건문
+                if (code.charAt(code.length - 1) === "{") {
+                    blockVariable[blockAmount++] = [currentBlockNumber];
                     currentBlockNumber = currentCodeNumber++;
                 } else {
                     readMainCode(currentBlockNumber, currentCodeNumber + 1);
@@ -109,17 +110,18 @@ function draw(blockNumber, codeNumber) {
             }
 
         } else {
-            if (code.subString(code.length - 1) != "{") {
+            if (code.charAt(code.length - 1) !== "{") {
                 currentCodeNumber++;
             }
             currentCodeNumber++;
             return 1;
         }
+        return 1;
     }
 
 }
 function resetDraw() {
-    blockVariable = [[], []];
+    blockVariable = [];
     blockAmount = 0;
     currentBlockNumber = 0;
     currentCodeNumber = 1;
@@ -131,7 +133,7 @@ function resetVariable(index) {
         for (var j = 1; j < blockVariable[i].length; j++) {
             //id에 해당하는 변수 삭제 메소드 호출
         }
-        blockVariable[i] = [];
+        blockVariable.pop();
         tempAmount--;
     }
     blockAmount = tempAmount;

@@ -188,5 +188,5 @@ function returnType(id) {
 function V_returnValue(id) {
     var Value = $('#'+id).children("p").text();
     console.log("값 리턴 :" + Value);
-   // return Value;
+    return Value;
 }
