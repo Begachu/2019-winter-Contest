@@ -155,8 +155,8 @@ function readCode(code) {
         var slice = code.indexOf("=");
         var temp = code.substring(0, slice);
 
-        if (code.indexOf(slice + 1) == "=" || code.indexOf(slice - 1) == ">"
-            || code.indexOf(slice - 1) == "<" || code.indexOf(slice - 1) == "!") { //비교연산자인 경우 처리 안함
+        if (code.charAt(slice + 1) == "=" || code.charAt(slice - 1) == ">"
+            || code.charAt(slice - 1) == "<" || code.charAt(slice - 1) == "!") { //비교연산자인 경우 처리 안함
         } else {
             var temp_value = readCode(code.substring(slice+1)); //메소드를 이용하여 뒤의 값들 연산
             temp = temp.trim(); //좌우 공백제거
@@ -171,7 +171,7 @@ function readCode(code) {
                 temp = makeVariable(temp);
                 if (temp == null) return null;   //특수한 경우로, 아직 미완성처리이거나 오류
             }
-            setVariable(code, temp_value);
+            setVariable(temp, temp_value);
             return temp_value;
         }
     }
@@ -199,7 +199,7 @@ function readCode(code) {
             //숫자로 변환하여 값 대체
             var front = code.substring(0, start);
             var tail = temp_code.substring(end + 1);
-            code = front + parseInt(tempChar) + tail;
+            code = front + tempChar.charCodeAt(0) + tail;
         } else {
             break;
         }

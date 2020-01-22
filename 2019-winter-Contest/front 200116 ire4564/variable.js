@@ -169,6 +169,9 @@ function typeVariable(id, type){
 
 //변수 값 바꾸기
 function setVariable(id, value){
+    var types =  $("#" + id + "T").text();
+    if(types==0) value = parseInt(value);
+    if(types==3) value = String.fromCharCode(value);
     $('#'+id).children("p").text(value);
 }
 

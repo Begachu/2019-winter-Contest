@@ -65,8 +65,9 @@ function draw(blockNumber, codeNumber) {
     if (codeNumber+1 == currentCodeNumber) return 0;
     if (codeNumber < currentCodeNumber) resetDraw();
     var tempCode = $("#codeNumber" + currentBlockNumber + "_" + currentCodeNumber);
-    if (tempCode === undefined) {     //존재하지 않는 경우
+    if (tempCode.length==0) {     //존재하지 않는 경우
         currentCodeNumber++;
+        return 1;
     }
     var codeType = tempCode.find("input")[0].value;
     if (codeType == 0) {
