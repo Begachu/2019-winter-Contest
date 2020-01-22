@@ -113,7 +113,7 @@ createVariable("Two", 2); //하나만 생성하기
 **********************************************************************************/
 
  //이차원 배열 추가
-// createDoubleArray("Doubles", 20, 4, 5);
+ //createDoubleArray("Doubles", 20, 4, 5);
  //createDoubleArray("Test", 20, 2, 3);
 
  //이차원 배열 값 변경

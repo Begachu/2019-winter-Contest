@@ -483,3 +483,14 @@ function returnDoubleValue(id, index1, index2) {
     
     return values;
 }
+
+document.getElementById('reset').onclick = function() {
+    //var showR = document.getElementById('show');
+    //$(showR).children().remove();
+    resetDraw();
+   // console.log("눌림")
+}
+document.getElementById('go').onclick = function(){
+    draw(currentBlockNumber, currentCodeNumber);
+    codeCSS(currentBlockNumber, currentCodeNumber);
+}

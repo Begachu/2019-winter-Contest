@@ -122,16 +122,17 @@ function draw(blockNumber, codeNumber) {
 
 }
 function resetDraw() {
+    var showR = document.getElementById('show');
+    $(showR).children().remove();
     blockVariable = [];
     blockAmount = 0;
     currentBlockNumber = 0;
     currentCodeNumber = 1;
 }
 function resetVariable(index) {
-    var tempAmount = blockAmount;
-    for (var i = 0; i < blockAmount; i++) {
-        if (blockVariable[i][0] < index) continue;
-        for (var j = 1; j < blockVariable[i].length; j++) {
+    //var tempAmount = blockAmount;
+    var tempId = blockVariable.pop();
+        for (var j = 1; j < tempId.length; j++) {
             //id에 해당하는 변수 삭제 메소드 호출
             var type = returnType(blockVariable[i][j]);
             if(type<10) deleteVariable(blockVariable[i][j]);
@@ -139,10 +140,8 @@ function resetVariable(index) {
             else if(type<30) ;
             else if(type<110) deleteStack(blockVariable[i][j]); 
         }
-        blockVariable.pop();
-        tempAmount--;
-    }
-    blockAmount = tempAmount;
+        //tempAmount--;
+    blockAmount--;
 }
 function addVariable(id) {
     for (var i = 0; i < blockAmount; i++) {

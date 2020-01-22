@@ -19,8 +19,8 @@
             <!--그림이 그려질 영역-->
             </div>
             <div id="btn_area" class="col-md-4 col-sm-4">
-                <input type="button" id="back" class="btn" value="◀">
-                <input type="button" id="front" class="btn" value="▶"><br/>
+                <input type="button" id="reset" class="btn2" value="RESET">
+                <input type="button" id="go" class="btn" value="▶"><br/>
             </div>
         
         </div>
